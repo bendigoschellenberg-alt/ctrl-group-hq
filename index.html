@@ -3872,10 +3872,18 @@ async function cloneSeedMyInventory(){
 let CLONE_INIT_PROMISE=null;
 
 /* Known recent owner TikToks from the October 2026 CTRL Group catalog.
-   One-time add-only import into existing IndexedDB. It never updates or deletes records,
+   One-time add-only import into existing IndexedDB; 42 documented public post links. It never updates or deletes records,
    and it does NOT claim these are the latest public posts as of today. */
-const HQ_RECENT_TIKTOK_BATCH='owner-tiktoks-2026-10-13-to-18-v1';
+const HQ_RECENT_TIKTOK_BATCH='owner-tiktoks-2026-09-22-to-10-29-v2';
 const HQ_KNOWN_RECENT_TIKTOKS=[
+ {"id":"7702127777796934930","date":"2026-10-29","name":"Obsessed","caption":"Obsessed #minecraft #creatorsearchinsight","song":"Iconic and Chaotic — The Cobalt Moth"},
+ {"id":"7702044351588879623","date":"2026-10-29","name":"Another Day, Another Rainbow 🌈","caption":"Another day another rainbow 🌈 #minecraft #creative #bedrock #rainbow #colorpalette","song":"original sound — ThugGuru Productions"},
+ {"id":"7701076554025225490","date":"2026-10-26","name":"Minecraft Creative","caption":"#creative #minecraft","song":"Watch Me Level Up — Grainbelt Transit"},
+ {"id":"7701075372841979137","date":"2026-10-26","name":"Island Town","caption":"Island town #creative #minecraft","song":"Любов, Пташка Вільна — Kozak Muzon"},
+ {"id":"7694897326317473031","date":"2026-10-09","name":"Mansion Driveway in the Works!","caption":"Mansion Driveway in the works! #minecraft #creative","song":"New Level — Thunder Angel"},
+ {"id":"7694203662570245384","date":"2026-10-08","name":"Oh Hey Barbie!","caption":"Oh hey Barbie! #barbie #creative  #minecraft","song":"No Limit Mode — Kalyshm'an"},
+ {"id":"7688993040064728321","date":"2026-09-23","name":"Day 1 at the Motel and the Journey Begins","caption":"Day 1 at the motel and the journey begins. #PinkWink #TheHappyTrail #Minecraft #Creative #BuildJourney","song":"Midnight City — M83"},
+ {"id":"7688445302700838152","date":"2026-09-22","name":"Final Ranch Update","caption":"Final ranch update because I accidentally deleted it 😭 #creative #minecraft","song":"Am I Wrong — Nico & Vinz"},
  {id:'7698192262919884050',date:'2026-10-18',name:'Glowy Minecraft Blocks',caption:'Love me some glowy blocks #minecraft #creative',song:'She Built That — The Midnight Larks'},
  {id:'7698072323273837832',date:'2026-10-18',name:'I Found a Unicorn!',caption:'Omg found a unicorn! #minecraft',song:'I Am a Unicorn — Simone Sommerland, Karsten Glück, die Kita-Frösche'},
  {id:'7697793422869957894',date:'2026-10-17',name:'Gucci in Minecraft',caption:'Gucci #minecraft #creative',song:'CAN YOU SEE ME? — Rezz'},
@@ -3900,8 +3908,8 @@ async function cloneSeedKnownRecentTikToks(){
        name:post.name,manualTitle:true,postUrl:url,tiktokUrl:url,
        caption:post.caption,hashtags:(post.caption.match(/#[A-Za-z0-9_]+/g)||[]).join(' '),
        song:post.song,postDate:post.date,date:post.date,status:'Posted',
-       simpleNote:'From my saved CTRL Group TikTok catalog (October 2026).',
-       sourceCatalog:'CTRL Group October 2026'
+       simpleNote:'From my saved CTRL Group TikTok catalogs (September–October 2026).',
+       sourceCatalog:'CTRL Group September–October 2026'
      }
    });
  }
