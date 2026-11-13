@@ -3870,6 +3870,46 @@ async function cloneSeedMyInventory(){
 }
 
 let CLONE_INIT_PROMISE=null;
+
+/* Known recent owner TikToks from the October 2026 CTRL Group catalog.
+   One-time add-only import into existing IndexedDB. It never updates or deletes records,
+   and it does NOT claim these are the latest public posts as of today. */
+const HQ_RECENT_TIKTOK_BATCH='owner-tiktoks-2026-10-13-to-18-v1';
+const HQ_KNOWN_RECENT_TIKTOKS=[
+ {id:'7698192262919884050',date:'2026-10-18',name:'Glowy Minecraft Blocks',caption:'Love me some glowy blocks #minecraft #creative',song:'She Built That — The Midnight Larks'},
+ {id:'7698072323273837832',date:'2026-10-18',name:'I Found a Unicorn!',caption:'Omg found a unicorn! #minecraft',song:'I Am a Unicorn — Simone Sommerland, Karsten Glück, die Kita-Frösche'},
+ {id:'7697793422869957894',date:'2026-10-17',name:'Gucci in Minecraft',caption:'Gucci #minecraft #creative',song:'CAN YOU SEE ME? — Rezz'},
+ {id:'7696602629459184903',date:'2026-10-14',name:'Fuckery Factory — Another Renovation',caption:'The 55555th renovation for the Fuckery Factory #minecraft #creative',song:'original sound — Katee'},
+ {id:'7696319588383886610',date:'2026-10-13',name:'Barbie Tropics',caption:'Barbie tropics #minecraft #creative',song:'Welcome to My Game — Hazel Rowe'}
+];
+async function cloneSeedKnownRecentTikToks(){
+ const done=Array.isArray(CLONE_DATA.seedBatches)?CLONE_DATA.seedBatches:[];
+ if(done.includes(HQ_RECENT_TIKTOK_BATCH))return;
+ if(!Array.isArray(CLONE_DATA.hq_records))throw Error('Saved TikTok storage was not available; no import was attempted.');
+ const posts=CLONE_DATA.hq_records.filter(row=>row&&row.kind==='TikTok');
+ const alreadySaved=(id)=>posts.some(row=>Object.values(row.data||{}).some(value=>typeof value==='string'&&value.includes(id))||String(row.import_source_id||'').includes(id));
+ const now=new Date().toISOString(),additions=[];
+ for(const post of HQ_KNOWN_RECENT_TIKTOKS){
+   if(alreadySaved(post.id))continue;
+   const url='https://www.tiktok.com/@missistephi/video/'+post.id;
+   additions.push({
+     id:cloneUUID(),kind:'TikTok',user_id:CLONE_USER.id,
+     created_at:now,updated_at:now,
+     import_source_id:'owner-tiktok-catalog-oct-2026:'+post.id,
+     data:{
+       name:post.name,manualTitle:true,postUrl:url,tiktokUrl:url,
+       caption:post.caption,hashtags:(post.caption.match(/#[A-Za-z0-9_]+/g)||[]).join(' '),
+       song:post.song,postDate:post.date,date:post.date,status:'Posted',
+       simpleNote:'From my saved CTRL Group TikTok catalog (October 2026).',
+       sourceCatalog:'CTRL Group October 2026'
+     }
+   });
+ }
+ CLONE_DATA.hq_records.push(...additions);
+ CLONE_DATA.seedBatches=[...done,HQ_RECENT_TIKTOK_BATCH];
+ CLONE_DATA.lastRecentTikTokImport={batch:HQ_RECENT_TIKTOK_BATCH,added:additions.length,completedAt:now};
+ await clonePersist();
+}
 async function cloneInit(){
  if(CLONE_INIT_PROMISE)return CLONE_INIT_PROMISE;
  CLONE_INIT_PROMISE=(async()=>{
@@ -3878,6 +3918,7 @@ async function cloneInit(){
   await cloneSeedHistoricalCollection();
   await cloneSeedCompleteCatalogue();
   await cloneSeedMyInventory();
+  await cloneSeedKnownRecentTikToks();
  })();
  return CLONE_INIT_PROMISE;
 }
